@@ -1658,10 +1658,10 @@ public class PlayerInfo extends Util {
 	public void stopSettingKitItems() {
 		if (player() != null) {
 			PlayerInventory inv = player().getInventory();
-			ItemStack[] contents = inv.getContents();
-			ItemStack[] hotbar = new ItemStack[9];
-			for (int i=0; i<9; i++) hotbar[i] = contents[i];
-			settingKitItems.setItems(hotbar);
+			ItemStack[] contents = inv.getStorageContents();
+//			ItemStack[] hotbar = new ItemStack[9];
+//			for (int i=0; i<9; i++) hotbar[i] = contents[i];
+			settingKitItems.setItems(contents);
 			player().getInventory().setContents(savedItems);
 		}
 		

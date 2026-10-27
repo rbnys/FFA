@@ -37,6 +37,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.Plugin;
 
 import com.comphenix.protocol.PacketType;
@@ -181,9 +182,20 @@ public abstract class Util {
 				}
 
 				if (isType.toLowerCase().contains("potion")) {
-					Potion1_9 pot = Potion1_9.fromItemStack(is);
-					serializedItemStack += ":p@" + pot.getType().name() + "|" + pot.isStrong() + "|"
-							+ pot.isExtendedDuration() + "|" + pot.isSplash();
+					if (im instanceof PotionMeta) {
+						PotionMeta potionMeta = (PotionMeta) im;
+						org.bukkit.potion.PotionType baseType = potionMeta.getBasePotionType();
+						if (baseType != null) {
+							String baseName = baseType.name();
+							boolean strong = baseName.startsWith("STRONG_");
+							boolean extended = baseName.startsWith("LONG_");
+							if (strong || extended) {
+								baseName = baseName.substring(baseName.indexOf('_') + 1);
+							}
+							serializedItemStack += ":p@" + baseName + "|" + strong + "|" + extended + "|"
+									+ (is.getType() == Material.SPLASH_POTION);
+						}
+					}
 				}
 
 				serialization += i + "#" + serializedItemStack + ";";
@@ -257,13 +269,39 @@ public abstract class Util {
 					is = SpecialItem.valueOf(itemAttribute[1].toUpperCase()).item(is.getAmount());
 					break;
 				} else if (itemAttribute[0].equals("p") && createdItemStack) {
-					String[] potData = itemAttribute[1].split("\\|");
-					Potion1_9.PotionType type = Potion1_9.PotionType.valueOf(Potion1_9.PotionType.class,
-							potData[0].toUpperCase());
-					boolean strong = Boolean.parseBoolean(potData[1]);
-					boolean extended = Boolean.parseBoolean(potData[2]);
-					boolean splash = Boolean.parseBoolean(potData[3]);
-					is = new Potion1_9(type, strong, extended, splash, false).toItemStack(is.getAmount());
+					try {
+						String[] potData = itemAttribute[1].split("\\|");
+						org.bukkit.potion.PotionType baseType = org.bukkit.potion.PotionType.valueOf(
+								potData[0].toUpperCase());
+						boolean strong = potData.length > 1 && Boolean.parseBoolean(potData[1]);
+						boolean extended = potData.length > 2 && Boolean.parseBoolean(potData[2]);
+						boolean splash = potData.length > 3 && Boolean.parseBoolean(potData[3]);
+
+						String fullName = baseType.name();
+						if (extended) {
+							fullName = "LONG_" + fullName;
+						} else if (strong) {
+							fullName = "STRONG_" + fullName;
+						}
+
+						org.bukkit.potion.PotionType fullType = baseType;
+						try {
+							fullType = org.bukkit.potion.PotionType.valueOf(fullName);
+						} catch (IllegalArgumentException ignored) {
+							fullType = baseType;
+						}
+
+						ItemStack potionItem = new ItemStack(splash ? Material.SPLASH_POTION : Material.POTION,
+								is.getAmount());
+						PotionMeta potionMeta = (PotionMeta) potionItem.getItemMeta();
+						if (potionMeta != null) {
+							potionMeta.setBasePotionType(fullType);
+							potionItem.setItemMeta(potionMeta);
+							is = potionItem;
+						}
+					} catch (Exception e) {
+						// Leave `is` as the base potion stack created from the type attribute.
+					}
 				}
 			}
 

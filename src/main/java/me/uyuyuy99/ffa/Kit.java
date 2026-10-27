@@ -89,10 +89,10 @@ public enum Kit {
 		inv.setLeggings(pants);
 		inv.setChestplate(chest);
 		inv.setHelmet(helmet);
-		
-		inv.addItem(items);
+
 		inv.setItem(7, (this == HUNTER) ? SpecialItem.SUPER_COMPASS.item() : SpecialItem.COMPASS.item());
 		inv.setItem(8, SpecialItem.CTRL_KIT.item());
+        inv.addItem(items);
 		
 		// Guards dual-wield shields
 		if (this == GUARD) {
