@@ -56,7 +56,7 @@ public class Arena {
 			if (!loc.getWorld().equals(world)) {
 				return false;
 			} else {
-				if (region.isIn(loc)) {
+				if (region.isBlockIn(loc)) {
 					return true;
 				}
 			}

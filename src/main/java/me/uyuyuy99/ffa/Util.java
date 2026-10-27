@@ -4,6 +4,8 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +18,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.ByteArrayOutputStream;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -877,5 +880,27 @@ public abstract class Util {
 		g.dispose();
 		return scaledBI;
 	}
+
+    public static void connectPlayerToServer(Player player, String serverName) {
+        if (!player.isOnline()) {
+            return;
+        }
+
+        try (
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                DataOutputStream out = new DataOutputStream(bytes)
+        ) {
+            out.writeUTF("Connect");
+            out.writeUTF(serverName);
+
+            player.sendPluginMessage(
+                    plugin,
+                    "BungeeCord",
+                    bytes.toByteArray()
+            );
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to construct the server connection message.", e);
+        }
+    }
 
 }

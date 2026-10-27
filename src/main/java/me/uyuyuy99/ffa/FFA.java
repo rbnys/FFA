@@ -92,6 +92,9 @@ public class FFA extends JavaPlugin implements Listener {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+
+        // Allow plugin to send players to the anarchy server by connecting to Velocity's channel
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		
 		registerSeializations();
 		log = this.getLogger();
@@ -1270,18 +1273,29 @@ public class FFA extends JavaPlugin implements Listener {
 		}
 		
 		if (cmdString.equals("giveallkits")) {
-			if (!hasPermission(player, "ffa.removekit")) {
+			if (!hasPermission(player, "ffa.givekit")) {
 				sender.sendMessage(noPermission);
 			} else {
 				if (args.length < 1) {
 					sender.sendMessage(ChatColor.RED + "Usage: /giveallkits <player>");
 				} else {
 					for (Kit k : Kit.values()) {
-						if (!k.isFree()) getServer().dispatchCommand(sender, "givekit " + args[0] + " " + k.getName());
+						if (!k.isFree() && k != Kit.PIRATE) getServer().dispatchCommand(sender, "givekit " + args[0] + " " + k.getName());
 					}
 				}
 			}
 		}
+
+        if (cmdString.equals("gimmekits")) {
+            if (player == null) {
+                sender.sendMessage(noConsole);
+            }
+
+            for (Kit kit : Kit.values()) {
+                if (kit.isFree() || kit == Kit.PIRATE) continue;
+                pi.addKitOwned(kit);
+            }
+        }
 		
 		if (cmdString.equals("removeallkits")) {
 			if (!hasPermission(player, "ffa.removekit")) {

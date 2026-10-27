@@ -53,7 +53,6 @@ import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -70,6 +69,12 @@ public class Listeners extends Util implements Listener {
 	private List<Arrow> midairShots = new ArrayList<>();
 	private List<UUID> needsToStayInMidair = new ArrayList<>();
 	private Map<Arrow, PlayerInfo> potentialTrickshots = new HashMap<>();
+    private Region[] anarchyPortals = new Region[] {
+            new Region(new Location(Bukkit.getWorld("world"), 490, 15, -460),
+                    new Location(Bukkit.getWorld("world"), 488, 19, -459)),
+            new Region(new Location(Bukkit.getWorld("world"), 490, 15, -490),
+                    new Location(Bukkit.getWorld("world"), 488, 19, -489))
+    };
 	
 	public Listeners(FFA instance) {
 		plugin = instance;
@@ -403,7 +408,7 @@ public class Listeners extends Util implements Listener {
 					if (block.getWorld() != world) {
 						player.sendMessage(ChatColor.RED + "You are not in the correct world to set spawns!");
 					} else {
-						if (!region.isIn(blockLoc)) {
+						if (!region.isBlockIn(blockLoc)) {
 							player.sendMessage(ChatColor.RED + "You cannot set spawns outside the arena!");
 						} else {
 							if (!player.hasPermission("ffa.arena.spawns")) {
@@ -1819,7 +1824,7 @@ public class Listeners extends Util implements Listener {
 		
 		if (match != null && (status == Status.PLAYING || status == Status.SPECTATING)) {
 			// Stop players & spectators from leaving the arena
-			if (!match.getArena().getRegion().isIn(to)) {
+			if (!match.getArena().getRegion().isBlockIn(to)) {
 				from.setYaw(to.getYaw());
 				from.setPitch(to.getPitch());
 				
@@ -1857,6 +1862,14 @@ public class Listeners extends Util implements Listener {
 					}
 				}
 			}
+
+            // Lava portals to Anarchy server
+            for (Region portal : anarchyPortals) {
+                if (portal.isIn(to)) {
+                    Util.connectPlayerToServer(player, "anarchy");
+                    break;
+                }
+            }
 		}
 		
 		// When pirate moves, make it look like the boat is moving
@@ -1987,7 +2000,7 @@ public class Listeners extends Util implements Listener {
 		if (match != null && match.getArena() != null && (status == Status.PLAYING || status == Status.SPECTATING)) {
 			Location to = event.getTo();
 			
-			if (!match.getArena().getRegion().isIn(to)) {
+			if (!match.getArena().getRegion().isBlockIn(to)) {
 				Location from = event.getFrom();
 				
 				from.setYaw(to.getYaw());

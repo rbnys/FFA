@@ -110,6 +110,10 @@ commands:
     description: Takes all premium classes away from a player.
     usage: /removeallkits <player>
     aliases: [removeallclasses]
+  gimmekits:
+    description: Gives all premium kits to yourself.
+    usage: /gimmekits
+    aliases: [gimmeclasses]
   map:
     description: Sets the arena for the match.
     usage: /map <id|name>

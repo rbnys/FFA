@@ -255,7 +255,7 @@ public class ArenaManager extends Util {
 	// Checks if the given location is inside an arena or not (optionally returns the arena, null if none)
 	public Arena getInsideArena(Location loc) {
 		for (Arena a : arenas) {
-			if (a.getRegion().isIn(loc)) {
+			if (a.getRegion().isBlockIn(loc)) {
 				return a;
 			}
 		}

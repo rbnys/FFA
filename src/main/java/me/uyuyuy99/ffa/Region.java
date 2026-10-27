@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.entity.Player;
 
 public class Region implements ConfigurationSerializable {
 	
@@ -58,17 +59,21 @@ public class Region implements ConfigurationSerializable {
 		return map;
 	}
 	
-	public boolean isIn(Location loc) {
+	public boolean isBlockIn(Location loc) {
 		final int x = loc.getBlockX();
 		final int y = loc.getBlockY();
 		final int z = loc.getBlockZ();
-		
-		if (x > Math.min(x1, x2) && x < Math.max(x1, x2) && y < Math.max(y1, y2) && z > Math.min(z1, z2) && z < Math.max(z1, z2)) {
-			return true;
-		}
-		
-		return false;
-	}
+
+        return x > Math.min(x1, x2) && x < Math.max(x1, x2) && y < Math.max(y1, y2) && z > Math.min(z1, z2) && z < Math.max(z1, z2);
+    }
+
+    public boolean isIn(Location loc) {
+        final double x = loc.getX();
+        final double y = loc.getY();
+        final double z = loc.getZ();
+
+        return x > Math.min(x1, x2) && x < Math.max(x1, x2) && y < Math.max(y1, y2) && z > Math.min(z1, z2) && z < Math.max(z1, z2);
+    }
 	
 	public Location loc(World world) {
 		return new Location(world, x1, y1, z1);
