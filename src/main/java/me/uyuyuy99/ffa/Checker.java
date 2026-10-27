@@ -9,6 +9,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Sign;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -185,9 +187,9 @@ public class Checker extends Util implements Runnable {
 						String configCamping = pi.is(Kit.SNIPER) ? "camping-move-rate-threshold-sniper" : "camping-move-rate-threshold";
 						
 						if (moveRate < config.getInt("options." + configCamping)) {
-							if ((System.currentTimeMillis() - pi.getLastCamped()) > config.getInt("options.camping-cooldown") * 1000) {
-								player.setLastDamageCause(new EntityDamageEvent(player, DamageCause.LIGHTNING, 1000D));
-								player.damage(1000);
+							if ((System.currentTimeMillis() - pi.getLastCamped()) > config.getInt("options.camping-cooldown") * 1000L) {
+//								player.setLastDamageCause(new EntityDamageEvent(player, DamageCause.LIGHTNING, 1000D));
+								player.damage(1000, DamageSource.builder(DamageType.LIGHTNING_BOLT).build());
 								player.getWorld().strikeLightningEffect(player.getLocation());
 								plugin.players.broadcast(message("camping", "name", player.getName()), pi.getMatch());
 								pi.setLastCamped();

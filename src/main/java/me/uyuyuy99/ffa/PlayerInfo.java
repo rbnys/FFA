@@ -5,16 +5,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -179,7 +171,7 @@ public class PlayerInfo extends Util {
 					double speed = Double.parseDouble(args[2]);
 					if (speed > 100) return "TOO FAST";
 					Location eyeLoc = player().getEyeLocation();
-					TNTPrimed tnt = (TNTPrimed) plugin.getWorld().spawnEntity(eyeLoc, EntityType.PRIMED_TNT);
+					TNTPrimed tnt = (TNTPrimed) plugin.getWorld().spawnEntity(eyeLoc, EntityType.TNT);
 					tnt.setFuseTicks(12);
 					tnt.setFireTicks(20 * 60);
 					tnt.setVelocity(eyeLoc.getDirection().multiply(speed));
@@ -292,7 +284,7 @@ public class PlayerInfo extends Util {
 				PacketContainer packetSpawn = proto.createPacket(PacketType.Play.Server.SPAWN_ENTITY);
 				packetSpawn.getIntegers().write(0, standID);
 				packetSpawn.getUUIDs().write(0, UUID.randomUUID());
-				packetSpawn.getEntityTypeModifier().write(0, EntityType.BOAT);
+				packetSpawn.getEntityTypeModifier().write(0, EntityType.OAK_BOAT);
 				packetSpawn.getDoubles().write(0, loc.getX());
 				packetSpawn.getDoubles().write(1, loc.getY());
 				packetSpawn.getDoubles().write(2, loc.getZ());
@@ -1835,7 +1827,7 @@ public class PlayerInfo extends Util {
 				if (getRank().is(Rank.VIP)) {
 					if (status == Status.LOBBY) {
 						ItemStack elytra = new ItemStack(Material.ELYTRA, 1);
-						elytra.addUnsafeEnchantment(Enchantment.DURABILITY, 5); // TESTME
+						elytra.addUnsafeEnchantment(Enchantment.UNBREAKING, 5); // TESTME
 						inv.setChestplate(elytra);
 						inv.setItem(8, new ItemStack(Material.FIREWORK_ROCKET, 64));
 					} else {
@@ -1909,9 +1901,7 @@ public class PlayerInfo extends Util {
 	
 	public void resetPlayersHit() {
 		this.playersHit = new PlayerInfo[config.getInt("options.save-last-players-hit")];
-		for (int i=0; i<playersHit.length; i++) {
-			playersHit[i] = null;
-		}
+        Arrays.fill(playersHit, null);
 	}
 	
 	public PlayerInfo getLastPlayerHit() {
@@ -1986,7 +1976,7 @@ public class PlayerInfo extends Util {
 		spawnParticle("assassin-invis", player);
 		
 		if (invis) {
-			invisibleUntil = System.currentTimeMillis() + (1000 * config.getInt("options.invisible-time"));
+			invisibleUntil = System.currentTimeMillis() + (1000L * config.getInt("options.invisible-time"));
 			setVisibility();
 			plugin.players.addToSpectatorTeam(player);
 			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 0));
@@ -2038,11 +2028,8 @@ public class PlayerInfo extends Util {
 	
 	//Spread out lag between ticks
 	public boolean canSaveMovedBlocks(long total) {
-		if ((total % 10) == (tickToAnalyze % 10)) {
-			return true;
-		}
-		return false;
-	}
+        return (total % 10) == (tickToAnalyze % 10);
+    }
 	
 	public Location lastLoc(Player player) {
 		if (lastLoc == null) {
@@ -2134,10 +2121,10 @@ public class PlayerInfo extends Util {
 	public Player getNextSpectatee() {
 		List<Player> in = plugin.players.getOnlineIn(getMatch());
 		
-		if (in.size() == 0) {
+		if (in.isEmpty()) {
 			return null;
 		} else {
-			Collections.sort(in, new PlayerAlphaComparator());
+			in.sort(new PlayerAlphaComparator());
 			spectateeIndex++;
 			return in.get(spectateeIndex % in.size());
 		}
@@ -2256,6 +2243,7 @@ public class PlayerInfo extends Util {
 	
 	//Returns whether it actually achieved anything at all
 	public boolean achieve(Achievement ach) {
+        if (true) return false; //FIXME: Achievements are disabled for now
 		if (hasAchieved(ach)) return false;
 		Player player = player();
 		
@@ -2551,7 +2539,7 @@ public class PlayerInfo extends Util {
 		PacketContainer packetSpawn = proto.createPacket(PacketType.Play.Server.SPAWN_ENTITY);
 		packetSpawn.getIntegers().write(0, boatID);
 		packetSpawn.getUUIDs().write(0, UUID.randomUUID());
-		packetSpawn.getEntityTypeModifier().write(0, EntityType.BOAT);
+		packetSpawn.getEntityTypeModifier().write(0, EntityType.OAK_BOAT);
 		packetSpawn.getDoubles().write(0, pirateLoc.getX());
 		packetSpawn.getDoubles().write(1, pirateLoc.getY());
 		packetSpawn.getDoubles().write(2, pirateLoc.getZ());

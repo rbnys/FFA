@@ -97,7 +97,7 @@ public enum Kit {
 		// Guards dual-wield shields
 		if (this == GUARD) {
 			ItemStack shield = new ItemStack(Material.SHIELD, 1);
-			shield.addEnchantment(Enchantment.DURABILITY, 2);
+			shield.addEnchantment(Enchantment.UNBREAKING, 2);
 			inv.setItemInOffHand(shield);
 		}
 	}

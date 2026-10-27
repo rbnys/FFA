@@ -235,7 +235,7 @@ public class Listeners extends Util implements Listener {
 //						for (PlayerInfo pi : Listeners.this.plugin.players.getPlayers()) {
 //							if (pi.isCannonballID(packet.getIntegers().read(0))) {
 								event.setPacket(packet = packet.deepClone());
-								packet.getEntityTypeModifier().write(0, EntityType.PRIMED_TNT);
+								packet.getEntityTypeModifier().write(0, EntityType.TNT);
 								event.setPacket(packet);
 //								break;
 //							}
@@ -1350,8 +1350,8 @@ public class Listeners extends Util implements Listener {
 					player.updateInventory();
 					
 					if (SpecialItem.whichIs(item) == SpecialItem.RUM) {
-						player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 600, 0, true));
-						player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 600, 0, true));
+						player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 600, 0, true));
+						player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 600, 0, true));
 					}
 				}
 			}
@@ -1633,7 +1633,7 @@ public class Listeners extends Util implements Listener {
 		
 //		event.setJoinMessage("");
 		event.setJoinMessage(message("login", "name", playerName));
-		player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(16d);
+		player.getAttribute(Attribute.ATTACK_SPEED).setBaseValue(16d);
 		
 //		NCPExemptionManager.unexempt(player, CheckType.MOVING_SURVIVALFLY); NOCHEATFIX
 //		NCPExemptionManager.unexempt(player, CheckType.MOVING_CREATIVEFLY); NOCHEATFIX
@@ -1764,8 +1764,8 @@ public class Listeners extends Util implements Listener {
 		event.setQuitMessage("");
 //		event.setQuitMessage(message("logout", "name", player.getName()));
 		
-		player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(16d);
-		pi.setHasPirateBoat(false);
+		player.getAttribute(Attribute.ATTACK_SPEED).setBaseValue(16d);
+		if (pi.hasPirateBoat()) pi.setHasPirateBoat(false);
 		pi.resetCannonCharge();
 		
 		// Take out of current match (no longer necessary because there's only 1 match)
