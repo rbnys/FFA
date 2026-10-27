@@ -38,7 +38,6 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.EnumWrappers.ChatType;
 import com.comphenix.protocol.wrappers.EnumWrappers.ItemSlot;
 import com.comphenix.protocol.wrappers.EnumWrappers.SoundCategory;
 import com.comphenix.protocol.wrappers.Pair;
@@ -2243,7 +2242,6 @@ public class PlayerInfo extends Util {
 	
 	//Returns whether it actually achieved anything at all
 	public boolean achieve(Achievement ach) {
-        if (true) return false; //FIXME: Achievements are disabled for now
 		if (hasAchieved(ach)) return false;
 		Player player = player();
 		
@@ -2257,13 +2255,13 @@ public class PlayerInfo extends Util {
 				"{" + 
 				"    \"text\": \"" + ach.getName() + "\"," + 
 				"    \"color\": \"" + message("achieved-color") + "\"," + 
-				"    \"bold\": \"true\"," + 
+				"    \"bold\": true," + 
 				"    \"hoverEvent\": {" + 
 				"        \"action\": \"show_text\"," + 
 				"        \"value\": [{" + 
 				"            \"text\": \"{name}\"," + 
 				"            \"color\": \"{color}\"," + 
-				"            \"bold\": \"true\"" + 
+				"            \"bold\": true" + 
 				"        }{lore}]" + 
 				"    }" + 
 				"},";
@@ -2284,7 +2282,7 @@ public class PlayerInfo extends Util {
 			
 			String colorString = pi.hasAchieved(ach) ? "green" : "red";
 			String loreString = "";
-			for (String s : pi.getAchievementLore(ach)) loreString += ", {\"text\":\"\\n" + s + "\",\"color\":\"reset\",\"bold\":\"false\"}";
+			for (String s : pi.getAchievementLore(ach)) loreString += ", {\"text\":\"\\n" + s + "\",\"bold\":false}";
 			
 			String newJson = json.replace("{name}", pi.getAchievementName(ach))
 			                     .replace("{color}", colorString)
@@ -2294,13 +2292,10 @@ public class PlayerInfo extends Util {
 					: message("achieved-name-prefix") + name
 			);
 			
-			PacketContainer chatPacket = proto.createPacket(PacketType.Play.Server.SYSTEM_CHAT);
-//			chatPacket.getChatComponents().write(0, WrappedChatComponent.fromJson(newJson));
-			chatPacket.getStrings().write(0, newJson);
-//			chatPacket.getIntegers().write(0, 1);
-//			chatPacket.getChatTypes().write(0, ChatType.SYSTEM);
-			
 			try {
+				PacketContainer chatPacket = proto.createPacket(PacketType.Play.Server.SYSTEM_CHAT);
+				chatPacket.getChatComponents().write(0, WrappedChatComponent.fromJson(newJson));
+				chatPacket.getBooleans().write(0, false);
 				proto.sendServerPacket(p, chatPacket);
 			} catch (Exception e) {
 				e.printStackTrace();

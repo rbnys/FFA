@@ -1,7 +1,7 @@
 name: FFA
 version: '${project.version}'
 main: me.uyuyuy99.ffa.FFA
-api-version: 1.18
+api-version: 26.3
 depend: [ProtocolLib, WorldEdit, NBTAPI, Votifier]
 authors: [ uyuyuy99 ]
 description: Custom Minecraft KitPvP plugin
