@@ -278,6 +278,9 @@ public class FFA extends JavaPlugin implements Listener {
 		
 		//Remove any unneeded/old values from the config
 		for (Entry<String, Object> e : news.entrySet()) {
+            if (e.getKey().startsWith("sounds.") || e.getKey().startsWith("particles.")) {
+                continue;
+            }
 			if (!defaultConfig.isSet(e.getKey())) {
 				config.set(e.getKey(), null);
 			}

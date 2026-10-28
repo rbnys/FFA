@@ -902,7 +902,7 @@ public class Listeners extends Util implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onItemDrop(PlayerDropItemEvent event) {
 		PlayerInfo pi = pi(event.getPlayer());
-		
+
 		if (pi.isSettingKitItems()) {
 			event.getItemDrop().remove();
 		} else {
@@ -1511,25 +1511,28 @@ public class Listeners extends Util implements Listener {
 			Player killer = killerPI.player();
 			gotLife = killerPI.getKill(pi);
 			
-			if (pi.getID().toString().equalsIgnoreCase("f735ecd3-96b0-4a71-9695-98629f5b08fa")
-					|| pi.getID().toString().equalsIgnoreCase("54e632bc-db66-4c73-99c0-ed105ae2d229")
-					|| pi.getID().toString().equalsIgnoreCase("dd1bdf49-aca8-4da5-acfc-50a93f8751ec")) {
-				player.sendMessage("    DEATH: " + killerPI.getID());
-			}
+//			if (pi.getID().toString().equalsIgnoreCase("f735ecd3-96b0-4a71-9695-98629f5b08fa")
+//					|| pi.getID().toString().equalsIgnoreCase("54e632bc-db66-4c73-99c0-ed105ae2d229")
+//					|| pi.getID().toString().equalsIgnoreCase("dd1bdf49-aca8-4da5-acfc-50a93f8751ec")) {
+//				player.sendMessage("    DEATH: " + killerPI.getID());
+//			}
 			
 			//Butcher special ability
 			if (killerPI.is(Kit.BUTCHER)) {
-				event.getDrops().add(new ItemStack(Material.PORKCHOP, rand.nextInt(3) + 1));
+                player.getWorld().dropItemNaturally(player.getLocation().add(0, 1, 0),
+                        new ItemStack(Material.PORKCHOP, rand.nextInt(3) + 1));
 			}
 			
 			//Necromancer special ability
 			if (killerPI.is(Kit.NECROMANCER)) {
-				event.getDrops().add(new ItemStack(Material.SKELETON_SPAWN_EGG, 5)); //TESTME
+                player.getWorld().dropItemNaturally(player.getLocation().add(0, 1, 0),
+                        new ItemStack(Material.SKELETON_SPAWN_EGG, 5));
 			}
 			
 			//Assassin special ability
 			if (killerPI.is(Kit.ASSASSIN)) {
-				event.getDrops().add(SpecialItem.INVISIBILITY.item());
+                player.getWorld().dropItemNaturally(player.getLocation().add(0, 1, 0),
+                        SpecialItem.INVISIBILITY.item());
 			}
 			
 			//Hunter special ability

@@ -665,8 +665,30 @@ public abstract class Util {
 		float offY = (float) config.getDouble(configParticle + "diffV");
 		float offZ = (float) config.getDouble(configParticle + "diffH");
 		float extra = (float) config.getDouble(configParticle + "speed");
-		
-		loc.getWorld().spawnParticle(particle, loc, count, offX, offY, offZ, extra);
+        Color color = null;
+
+        if (config.contains(configParticle + "color")) {
+            String colorStr = config.getString(configParticle + "color");
+            String[] rgb = colorStr.split(",");
+
+            if (rgb.length == 3) {
+                try {
+                    int r = Integer.parseInt(rgb[0].trim());
+                    int g = Integer.parseInt(rgb[1].trim());
+                    int b = Integer.parseInt(rgb[2].trim());
+                    color = Color.fromRGB(r, g, b);
+                } catch (NumberFormatException e) {
+                    log("Invalid RGB color format in config for particle: " + configParticle, Level.WARNING);
+                    return;
+                }
+            }
+        }
+
+        if (color == null) {
+            loc.getWorld().spawnParticle(particle, loc, count, offX, offY, offZ, extra);
+        } else {
+            loc.getWorld().spawnParticle(particle, loc, count, offX, offY, offZ, extra, color);
+        }
 	}
 	public static void spawnParticle(String configParticle, Entity entity) {
 		spawnParticle(configParticle, entity.getLocation().add(0, entity.getHeight() / 2, 0));

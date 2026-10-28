@@ -143,24 +143,7 @@ public class PlayerInfo extends Util {
 	@Deprecated
 	public String test(String[] args) {
 		if (args.length == 1) {
-			try {
-				/* NPC Test
-				ParticleEffect.sendToAllPlayers(player().getLocation(), "test");
-				Util.playSoundToAll("test", player().getLocation());
-				
-				Iterator<NPC> iter = CitizensAPI.getNPCRegistry().iterator();
-				while (iter.hasNext()) {
-					NPC n = iter.next();
-					if (n.getName().equals(player().getName())) n.despawn();
-				}
-				player().sendMessage("test: " +  CitizensAPI.getNPCRegistry().getClass());
-				NPC clone = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "ez");
-				this.clone = clone;
-				clone.spawn(player().getLocation());
-				*/
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			Util.spawnParticle("test", player());
 		} else {
 			if (args[1].equals("open")) {
 				openAchievementMenu();
@@ -708,10 +691,10 @@ public class PlayerInfo extends Util {
 		else if (killsThisGame >= 5) achieve("game-kills-1");
 		
 		if (player != null) {
-			if (getID().toString().equalsIgnoreCase("f735ecd3-96b0-4a71-9695-98629f5b08fa")
-					|| getID().toString().equalsIgnoreCase("54e632bc-db66-4c73-99c0-ed105ae2d229")) {
-				player.sendMessage("    KILL: " + pi.getID());
-			}
+//			if (getID().toString().equalsIgnoreCase("f735ecd3-96b0-4a71-9695-98629f5b08fa")
+//					|| getID().toString().equalsIgnoreCase("54e632bc-db66-4c73-99c0-ed105ae2d229")) {
+//				player.sendMessage("    KILL: " + pi.getID());
+//			}
 			
 			player.sendMessage(message("you-killed-player", "killed", deathMessage, "name", pi.getName()));
 			

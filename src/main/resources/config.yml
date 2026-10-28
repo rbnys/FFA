@@ -420,6 +420,7 @@ particles:
     diffV: 0
     speed: 1
     count: 1
+    color: 255,255,255
   cannon-tracer:
     type: COMPOSTER
     diffH: 0
